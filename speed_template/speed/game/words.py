@@ -1,0 +1,1 @@
+# Look at 'snake' for inspiration
