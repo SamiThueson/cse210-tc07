@@ -2,6 +2,7 @@ from time import sleep
 from game import constants
 from game.score import Score
 from game.words import Words
+from game.buffer import Buffer
 
 class Director:
     """A code template for a person who directs the game. The responsibility of 
@@ -30,6 +31,7 @@ class Director:
         self._output_service = output_service
         self._score = Score()
         self._words = Words()
+        self._buffer = Buffer()
         
     def start_game(self):
         """Starts the game loop to control the sequence of play.
@@ -37,6 +39,7 @@ class Director:
         Args:
             self (Director): an instance of Director.
         """
+        self._words.generate_words()
         while self._keep_playing:
             self._get_inputs()
             self._do_updates()
@@ -50,7 +53,10 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        pass
+        letter = self._input_service.get_letter()
+        self._buffer.add_letter(letter)
+        if letter == "*":
+            self._buffer.clear_letters()
 
     def _do_updates(self):
         """Updates the important game information for each round of play. In 
@@ -59,7 +65,16 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        pass
+        buffer_text = self._buffer.get_text()
+        for word in self._words.get_words():
+            word_text = word.get_text()
+            if word_text in buffer_text:
+                self._words.remove_word(word)
+                self._score.add_points(2)
+
+        
+        for word in self._words.get_words():
+            word.move_next()
         
     def _do_outputs(self):
         """Outputs the important game information for each round of play. In 
@@ -72,4 +87,5 @@ class Director:
         self._output_service.clear_screen()
         self._output_service.draw_actor(self._score)
         self._output_service.draw_actors(self._words.get_words())
+        self._output_service.draw_actor(self._buffer)
         self._output_service.flush_buffer()
