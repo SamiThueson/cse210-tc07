@@ -44,6 +44,8 @@ class OutputService:
         x = position.get_x()
         y = position.get_y()
         self._screen.print_at(text, x, y, 7) # WHITE
+        # self._screen.print_at(text, constants.MAX_X, constants.MAX_Y, 7) # WHITE
+
 
     def draw_actors(self, actors):
         """Renders the given list of actors on the screen.
