@@ -71,10 +71,14 @@ class Director:
             if word_text in buffer_text:
                 self._words.remove_word(word)
                 self._score.add_points(2)
-
         
         for word in self._words.get_words():
             word.move_next()
+
+        # Check if all the words are gone and replace them with 5 new words
+        new_words = self._words.get_words()
+        if new_words == []:
+            self._words.generate_words()
         
     def _do_outputs(self):
         """Outputs the important game information for each round of play. In 
